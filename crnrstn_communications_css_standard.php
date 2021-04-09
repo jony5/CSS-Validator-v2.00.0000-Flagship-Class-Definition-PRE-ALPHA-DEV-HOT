@@ -399,7 +399,7 @@ class crnrstn_communications_css_standard{
 
         }else{
 
-            return $tmp_css_validation_pattern_LOWER;
+            return 'Hello world!';
             exit();
 
         }
