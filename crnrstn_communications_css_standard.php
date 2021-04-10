@@ -5285,7 +5285,7 @@ Formally, the display property sets an element\'s inner and outer display types.
     <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        '.$this->oCRNRSTN_USR->return_email_creative('CRNRSTN_FAVICON', 'HTML_DOM_WRAPPED_URI').'
+        '.$this->oCRNRSTN_USR->return_email_creative('CRNRSTN_FAVICON', CRNRSTN_UI_IMG_URI_HTML_WRAPPED).'
         <title>Email Client CSS Validator</title>
     </head>
     <body>
@@ -7138,8 +7138,8 @@ CSS Support Within Message';
         /*
         4.9.2021 at 2253hrs
 
-        50				total possible (total number of hits/css pattern matches)
-        11				total error
+        50              total possible (total number of hits/css pattern matches)
+        11              total error
 
         11/50 = A
         A * 100 = B
