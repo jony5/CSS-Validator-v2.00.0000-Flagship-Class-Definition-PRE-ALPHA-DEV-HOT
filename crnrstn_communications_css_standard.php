@@ -62,6 +62,8 @@ class crnrstn_communications_css_standard{
     public $web_mail_client_ARRAY = array();
     public $mobile_mail_client_ARRAY = array();
 
+    public $email_client_score_ARRAY = array();
+
     public $css_pattern_meta_nomination_ARRAY = array();
     public $css_pattern_meta_description_ARRAY = array();
     public $css_pattern_meta_note_ARRAY = array();
@@ -71,6 +73,7 @@ class crnrstn_communications_css_standard{
     protected $output_mode;
     protected $raw_data;
     protected $raw_data_LOWER;
+    protected $raw_data_PACKED;
 
     protected $desktop_mail_CONST_ARRAY = array();
     protected $web_mail_CONST_ARRAY = array();
@@ -81,7 +84,7 @@ class crnrstn_communications_css_standard{
     protected $results_count_aggregation_ARRAY = array();
     protected $results_summary_aggregate_ARRAY = array();
 
-    protected $grading_curve = 20.00000;
+    protected $grading_curve = 55.00000;
 
     public function __construct($oCRNRSTN_USR, $raw_html_data = NULL, $output_mode = 'HTML_PAGE'){
 
@@ -106,30 +109,54 @@ class crnrstn_communications_css_standard{
         $this->output_mode = $output_mode;
         $this->raw_data = $raw_html_data;
         $this->raw_data_LOWER = strtolower($raw_html_data);
+        $this->raw_data_PACKED = $this->oCRNRSTN_USR->properReplace(' ', '', $this->raw_data_LOWER);
 
         //
         // LET'S DEFINE SOME CONSTANTS FOR THIS CLASS OBJECT.
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_DESKTOP');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_MOBILE');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_WEB');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_NONE');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_IS_DEPRECATED');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_IS_NONSTANDARD');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_CSS_GRADIENTS');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STANDARD_USE');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STYLE_IN_HEAD');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_HEAD');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STYLE_IN_BODY');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_BODY');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_HSLA');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_RGB');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_RGBA');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_CURRENTCOLOR');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_ALERT_BANG');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_SUCCESS_CHK');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_ERR_X');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_CLIENT_ASSOC_HAS_META');
-        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_CLIENT_ASSOC_HAS_DOCS_LNK');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_DESKTOP');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_MOBILE');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_WEB');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_NONE');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_IS_DEPRECATED');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_IS_NONSTANDARD');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_CSS_GRADIENTS');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STANDARD_USE');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STYLE_IN_HEAD');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_HEAD');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STYLE_IN_BODY');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_BODY');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_HSLA');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_RGB');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_RGBA');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_CURRENTCOLOR');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_ALERT_BANG');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_SUCCESS_CHECK');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_ERR_X');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_CLIENT_ASSOC_HAS_META');
+//        $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_CLIENT_ASSOC_HAS_DOCS_LNK');
+
+
+        @define('CRNRSTN_MAIL_CLIENT_DESKTOP', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_DESKTOP'));
+        @define('CRNRSTN_MAIL_CLIENT_MOBILE', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_MOBILE'));
+        @define('CRNRSTN_MAIL_CLIENT_WEB', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_MAIL_CLIENT_WEB'));
+        @define('CRNRSTN_CSS_VALIDATE_NONE', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_NONE'));
+        @define('CRNRSTN_CSS_VALIDATE_IS_DEPRECATED', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_IS_DEPRECATED'));
+        @define('CRNRSTN_CSS_VALIDATE_IS_NONSTANDARD', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_IS_NONSTANDARD'));
+        @define('CRNRSTN_CSS_VALIDATE_CSS_GRADIENTS', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_CSS_GRADIENTS'));
+        @define('CRNRSTN_CSS_VALIDATE_STANDARD_USE', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STANDARD_USE'));
+        @define('CRNRSTN_CSS_VALIDATE_STYLE_IN_HEAD', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STYLE_IN_HEAD'));
+        @define('CRNRSTN_CSS_VALIDATE_LINK_IN_HEAD', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_HEAD'));
+        @define('CRNRSTN_CSS_VALIDATE_STYLE_IN_BODY', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STYLE_IN_BODY'));
+        @define('CRNRSTN_CSS_VALIDATE_LINK_IN_BODY', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_BODY'));
+        @define('CRNRSTN_CSS_VALIDATE_HSLA', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_HSLA'));
+        @define('CRNRSTN_CSS_VALIDATE_RGB', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_RGB'));
+        @define('CRNRSTN_CSS_VALIDATE_RGBA', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_RGBA'));
+        @define('CRNRSTN_CSS_VALIDATE_CURRENTCOLOR', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_CURRENTCOLOR'));
+        @define('CRNRSTN_CSS_ICON_ALERT_BANG', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_ALERT_BANG'));            // INDICATION OF ICON TYPE TO BIND
+        @define('CRNRSTN_CSS_ICON_SUCCESS_CHECK', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_SUCCESS_CHECK'));           // INDICATION OF ICON TYPE TO BIND
+        @define('CRNRSTN_CSS_ICON_ERR_X', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_ERR_X'));                 // INDICATION OF ICON TYPE TO BIND
+        @define('CRNRSTN_CSS_CLIENT_ASSOC_HAS_META', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_CLIENT_ASSOC_HAS_META'));      // INDICATION OF NEED TO SHOW A NOTE
+        @define('CRNRSTN_CSS_CLIENT_ASSOC_HAS_DOCS_LNK', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_CLIENT_ASSOC_HAS_DOCS_LNK'));  // INDICATION OF NEED TO HTTP LINK THE ELEMENT
 
         $this->load_mail_clients();
 
@@ -141,32 +168,9 @@ class crnrstn_communications_css_standard{
 
     private function validate_ugc_datum(){
 
-        //
-        // HOOOSTON...VE HAF PROBLEM!
-        //throw new Exception('An unknown form HTML key "'.$form_key.'" has been provided. The options which are available currently include: CSS_VALIDATION_EMAIL_MESSAGE.');
-
-        //$this->raw_data = $raw_html_data;
-
-
         foreach($this->css_pattern_meta_nomination_ARRAY as $key_css_species => $chunkArray0) {
 
             foreach ($chunkArray0 as $key_css => $css_string_nomination) {
-
-                /*
-                define('CRNRSTN_CSS_VALIDATE_NONE', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_NONE'));
-                define('CRNRSTN_CSS_VALIDATE_IS_DEPRECATED', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_IS_DEPRECATED'));
-                define('CRNRSTN_CSS_VALIDATE_IS_NONSTANDARD', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_IS_NONSTANDARD'));
-                define('CRNRSTN_CSS_VALIDATE_CSS_GRADIENTS', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_CSS_GRADIENTS'));
-                define('CRNRSTN_CSS_VALIDATE_STANDARD_USE', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STANDARD_USE'));
-                define('CRNRSTN_CSS_VALIDATE_STYLE_IN_HEAD', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STYLE_IN_HEAD'));
-                define('CRNRSTN_CSS_VALIDATE_LINK_IN_HEAD', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_HEAD'));
-                define('CRNRSTN_CSS_VALIDATE_STYLE_IN_BODY', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_STYLE_IN_BODY'));
-                define('CRNRSTN_CSS_VALIDATE_LINK_IN_BODY', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_BODY'));
-                define('CRNRSTN_CSS_VALIDATE_HSLA', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_HSLA'));
-                define('CRNRSTN_CSS_VALIDATE_RGB', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_RGB'));
-                define('CRNRSTN_CSS_VALIDATE_RGBA', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_RGBA'));
-                define('CRNRSTN_CSS_VALIDATE_CURRENTCOLOR', (int) $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_CURRENTCOLOR'));
-                 * */
 
                 //
                 // FOR EACH REGULATED CSS STRING PATTERN
@@ -175,13 +179,23 @@ class crnrstn_communications_css_standard{
 
                 switch($tmp_css_array[3]){
                     case CRNRSTN_CSS_VALIDATE_STYLE_IN_HEAD:
+
+                        $this->css_validate_STYLE_IN_HEAD($css_string_nomination, $key_css_species);
+
+                    break;
                     case CRNRSTN_CSS_VALIDATE_LINK_IN_HEAD:
 
+                        $this->css_validate_LINK_IN_HEAD($css_string_nomination, $key_css_species);
 
                     break;
                     case CRNRSTN_CSS_VALIDATE_STYLE_IN_BODY:
+
+                        $this->css_validate_STYLE_IN_BODY($css_string_nomination, $key_css_species);
+
+                    break;
                     case CRNRSTN_CSS_VALIDATE_LINK_IN_BODY;
 
+                        $this->css_validate_LINK_IN_BODY($css_string_nomination, $key_css_species);
 
                     break;
                     case CRNRSTN_CSS_VALIDATE_STANDARD_USE:
@@ -212,9 +226,17 @@ class crnrstn_communications_css_standard{
                 # EXECUTE AGAINST VALIDATION TYPE
                 # STORE ALL RESULT DATA
 
-
             }
         }
+
+    }
+
+    private function is_css_nom_pattern_match($http_data_str, $css_pattern){
+
+        $http_data_str = $this->return_clean_css_pattern(urldecode($http_data_str));
+        $css_pattern = $this->return_clean_css_pattern(urldecode($css_pattern));
+
+        return strcmp(strtolower($http_data_str), strtolower($css_pattern));
 
     }
 
@@ -264,7 +286,7 @@ class crnrstn_communications_css_standard{
                                     <a href="./archive/2008/1.0.0/email_validator/" target="_self" style=\'font-family:"Courier New", Courier, monospace; text-decoration:none; font-size: 11px; color: #6885C3; text-decoration:underline;\'>2008 archive</a>
                                 </div>
                                 <div style="float: left; text-align: left; padding:0 0 0 0; line-height: 15px;">
-                                    <a href="./?css_valptrn=return_all" target="_self" style=\'font-family:"Courier New", Courier, monospace; text-decoration:none; font-size: 11px; color: #6885C3; text-decoration:underline;\'>algorithm</a>
+                                    <a href="./?css_valptrn='.$this->oCRNRSTN_USR->generateNewKey(8, '01').'" target="_self" style=\'font-family:"Courier New", Courier, monospace; text-decoration:none; font-size: 11px; color: #6885C3; text-decoration:underline;\'>algorithm</a>
                                 </div>
 
                                 <div style="height:0; width:100%; clear:both; display: block; overflow: hidden;"></div>
@@ -285,8 +307,8 @@ class crnrstn_communications_css_standard{
 
                                     <div style="text-align: center; margin:0 auto;">
 
-                                        <div style="float:left; background-image:url('.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'BASE64').');background-repeat:no-repeat; margin-right:10px; padding:0 10px 0 17px; width:35px; height:19px;">&nbsp;<a href="http://validator.w3.org/check?uri=referer" target="_blank">XHTML</a></div>
-                                        <div style="float:left; background-image:url('.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'BASE64').');background-repeat:no-repeat; margin-right:10px; padding:0 10px 0 17px; width:25px; height:19px;">&nbsp;<a href="http://jigsaw.w3.org/css-validator/check/referer" target="_blank">CSS</a></div>
+                                        <div style="float:left; background-image:url('.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64).');background-repeat:no-repeat; margin-right:10px; padding:0 10px 0 17px; width:35px; height:19px;">&nbsp;<a href="http://validator.w3.org/check?uri=referer" target="_blank">XHTML</a></div>
+                                        <div style="float:left; background-image:url('.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64).');background-repeat:no-repeat; margin-right:10px; padding:0 10px 0 17px; width:25px; height:19px;">&nbsp;<a href="http://jigsaw.w3.org/css-validator/check/referer" target="_blank">CSS</a></div>
 
                                         <div style="height:0; width:100%; clear:both; display: block; overflow: hidden;"></div>
 
@@ -359,17 +381,49 @@ class crnrstn_communications_css_standard{
             // PAGE HEADER AND DESCRIPTION
             $tmp_output_ARRAY['HTML'] = $tmp_output_ARRAY['HTML'] . $this->return_validator_notes_kpi_header();
 
-            $i = 20;
             foreach($this->css_pattern_meta_nomination_ARRAY as $key_css_species => $chunkArray0){
 
-                if($i<0){
+                foreach($chunkArray0 as $key_css => $css_string_nomination) {
 
+                    //
+                    // CSS HEADER AND DESCRIPTION
+                    $tmp_output_ARRAY['HTML'] = $tmp_output_ARRAY['HTML'] . $this->dynamic_content_return($css_string_nomination, 'VALIDATOR_LOGIC_CSS_HEADER', 'HTML');
 
-                }else{
+                    //
+                    // DESKTOP CLIENT SUPPORT DETAIL
+                    $tmp_output_ARRAY['HTML'] = $tmp_output_ARRAY['HTML'] . $this->dynamic_content_return($css_string_nomination, 'VALIDATOR_LOGIC_DESKTOP_CLIENT_SUPPORT', 'HTML');
 
-                    foreach($chunkArray0 as $key_css => $css_string_nomination) {
+                    //
+                    // MOBILE CLIENT SUPPORT DETAIL
+                    $tmp_output_ARRAY['HTML'] = $tmp_output_ARRAY['HTML'] . $this->dynamic_content_return($css_string_nomination, 'VALIDATOR_LOGIC_MOBILE_CLIENT_SUPPORT', 'HTML');
 
-                        $i--;
+                    //
+                    // WEB CLIENT SUPPORT DETAIL
+                    $tmp_output_ARRAY['HTML'] = $tmp_output_ARRAY['HTML'] . $this->dynamic_content_return($css_string_nomination, 'VALIDATOR_LOGIC_WEB_CLIENT_SUPPORT', 'HTML');
+
+                }
+
+            }
+
+            return $this->return_css_validator_content_HTML($tmp_output_ARRAY['HTML']);
+
+        }else{
+
+            //
+            // RETURN LIST OF ALL CSS STRING PATTERN NOMINATIONS
+            $tmp_output_ARRAY = array();
+            $tmp_output_ARRAY['HTML'] = '';
+            $tmp_output_ARRAY['TEXT'] = '';
+
+            //
+            // PAGE HEADER AND DESCRIPTION
+            $tmp_output_ARRAY['HTML'] = $tmp_output_ARRAY['HTML'] . $this->return_validator_notes_kpi_header();
+
+            foreach($this->css_pattern_meta_nomination_ARRAY as $key_css_species => $chunkArray0){
+
+                foreach($chunkArray0 as $key_css => $css_string_nomination) {
+
+                    if($this->is_css_nom_pattern_match($tmp_css_validation_pattern, $css_string_nomination) === 0){
 
                         //
                         // CSS HEADER AND DESCRIPTION
@@ -386,23 +440,44 @@ class crnrstn_communications_css_standard{
                         //
                         // WEB CLIENT SUPPORT DETAIL
                         $tmp_output_ARRAY['HTML'] = $tmp_output_ARRAY['HTML'] . $this->dynamic_content_return($css_string_nomination, 'VALIDATOR_LOGIC_WEB_CLIENT_SUPPORT', 'HTML');
-                        
 
                     }
 
                 }
 
-
             }
 
             return $this->return_css_validator_content_HTML($tmp_output_ARRAY['HTML']);
 
-        }else{
+        }
 
-            return 'Hello world!';
-            exit();
+    }
+
+    private function return_css_combo(){
+
+        $tmp_str = '';
+        $tmp_array = array();
+
+        foreach($this->css_pattern_meta_nomination_ARRAY as $key_css_species => $chunkArray0) {
+
+            foreach ($chunkArray0 as $key_css => $css_string_nomination) {
+
+                $tmp_css = $this->return_clean_css_pattern($css_string_nomination);
+
+                if(!isset($tmp_array[$tmp_css])){
+
+                    $tmp_array[$tmp_css] = 1;
+
+                    $tmp_str .= '<option value="'.htmlentities(strtolower($tmp_css)).'">'.htmlentities($tmp_css).'</option>
+';
+
+                }
+
+            }
 
         }
+
+        return $tmp_str;
 
     }
 
@@ -419,10 +494,32 @@ class crnrstn_communications_css_standard{
                                                 
                                             </div>   
                                             
-                                            <div style=\'font-family:"Courier New", Courier, monospace; font-size: 17px; font-weight: bold; border-left: 0px solid #FFF;  border-top: 10px solid #FFF; border-bottom: 6px solid #FFF; color: #6885C3;\'>Overview ::</div>
-                                            <div style=\'font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; border-left: 0px solid #FFF; border-right: 10px solid #FFF; border-right: 10px solid #FFF; border-bottom: 10px solid #FFF; color: #6885C3; line-height:16px;\'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam quis odio risus. Nam bibendum augue risus, bibendum semper tellus tincidunt ut. Ut facilisis dapibus ipsum, vitae laoreet sapien sodales venenatis. </div>
+                                            <div style=\'font-family:"Courier New", Courier, monospace; font-size: 17px; font-weight: bold; border-left: 0px solid #FFF;  border-top: 10px solid #FFF; border-bottom: 6px solid #FFF; color: #6885C3;\'>Transparency ::</div>
+                                            <div style=\'font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; border-left: 0px solid #FFF; border-right: 10px solid #FFF; border-right: 10px solid #FFF; border-bottom: 10px solid #FFF; color: #6885C3; line-height:16px;\'>
+                                            Using inputs below, expose the performance based
+                                            assumptions which regulate the scoring algorithm behind 
+                                            this validator.<br><br>
+                                            
+                                            Matching information should be found within Campaign Monitor\'s
+                                            Ultimate Guide to CSS, <a href="http://www.campaignmonitor.com/css/" target="_blank" style="text-decoration: none; color:#0066CC; text-decoration: underline;">here</a>.</div>
                                         
-                                            <div style=\'font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; border-left: 0px solid #FFF;  border-top: 0px solid #FFF; border-bottom: 6px solid #FFF; color: #6885C3; line-height:19px;\'><a href="./?css_valptrn=return_all" target="_self" style=\'text-decoration:none; font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; color: #6885C3; text-decoration:underline; \'>Click here</a> to get all of this information in a single request.</div>
+                                            <div style=\'font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; border-left: 0px solid #FFF;  border-top: 0px solid #FFF; border-bottom: 6px solid #FFF; color: #6885C3; line-height:19px;\'><a href="./?css_valptrn=return_all" target="_self" style=\'text-decoration:none; font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; color: #6885C3; text-decoration:underline; \'>Click here</a> to get all of this from the server in a single &amp; <span style="color:#D24A45">proper massive large</span> server response.</div>
+                                            
+                                            <form>
+                                                <select name="crnrstn_css_patterns" onchange="crnrstn_goto_pattern(this.value)" style="height: 15px; font-size: 11px; display:inline;">
+                                                    <option value="00000101">- select a css rule</option>
+                                                   '.$this->return_css_combo().'
+                                                </select>                              
+                                            </form>
+                                            <script>
+                                            function crnrstn_goto_pattern(str_ptrn){
+                                                
+                                                window.location.href="./?css_valptrn=" + str_ptrn;
+                                              
+                                            }                                       
+                                            </script>
+                                            
+                                            
                             ';
 
         return $tmp_str;
@@ -497,7 +594,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'border-collapse';
                         $tmp_note = 'Supported, but the HTML attribute <code>cellspacing</code> takes precedence over it.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'list-style-type';
                         $tmp_note = 'Partial. Supports <code>none</code>, <code>disc</code>, <code>circle</code>, <code>square</code>, <code>decimal</code>, <code>lower-alpha</code>, <code>upper-alpha</code>, <code>lower-roman</code>, and <code>upper-roman</code>.';
@@ -538,7 +635,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backdrop-filter';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform';
                         $tmp_note = 'Buggy.';
@@ -546,7 +643,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backface-visibility';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'position';
                         $tmp_note = 'Partial. Elements with <code>fixed</code> scroll with the page instead of remaining fixed.';
@@ -554,23 +651,23 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_IBM_NOTES_9':
@@ -700,7 +797,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'border-collapse';
                         $tmp_note = 'Supported, but the HTML attribute <code>cellspacing</code> takes precedence over it.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'list-style-type';
                         $tmp_note = 'Partial. Supports <code>none</code>, <code>disc</code>, <code>circle</code>, <code>square</code>, <code>decimal</code>, <code>lower-alpha</code>, <code>upper-alpha</code>, <code>lower-roman</code>, and <code>upper-roman</code>.';
@@ -874,7 +971,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'border-collapse';
                         $tmp_note = 'Supported, but the HTML attribute <code>cellspacing</code> takes precedence over it.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'list-style-type';
                         $tmp_note = 'Partial. Supports <code>none</code>, <code>disc</code>, <code>circle</code>, <code>square</code>, <code>decimal</code>, <code>lower-alpha</code>, <code>upper-alpha</code>, <code>lower-roman</code>, and <code>upper-roman</code>.';
@@ -915,7 +1012,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backdrop-filter';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform';
                         $tmp_note = 'Buggy.';
@@ -923,39 +1020,39 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backface-visibility';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = '@font-face';
                         $tmp_note = 'When images are downloaded.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = '<link> in <body>';
                         $tmp_note = 'When images are downloaded.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = '<link> in <head>';
                         $tmp_note = 'When images are downloaded.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_POSTBOX':
@@ -968,7 +1065,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'CSS gradients';
                         $tmp_note = 'Supported with <code>-moz</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'background';
                         $tmp_note = 'Partial. Slash syntax values are not supported.';
@@ -996,11 +1093,11 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = '<link> in <body>';
                         $tmp_note = 'When images are downloaded.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = '<link> in <head>';
                         $tmp_note = 'When images are downloaded.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_THUNDERBIRD':
@@ -1009,19 +1106,19 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = '@font-face';
                         $tmp_note = 'Partial. User is prompted to download webfont, but only embedded (base64 encoded) fonts display.';
@@ -1029,11 +1126,11 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = '<link> in <body>';
                         $tmp_note = 'When images are downloaded.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = '<link> in <head>';
                         $tmp_note = 'When images are downloaded.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_WINDOWS_10_MAIL':
@@ -1179,7 +1276,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'border-collapse';
                         $tmp_note = 'Supported, but the HTML attribute <code>cellspacing</code> takes precedence over it.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'list-style-type';
                         $tmp_note = 'Partial. Supports <code>none</code>, <code>disc</code>, <code>circle</code>, <code>square</code>, <code>decimal</code>, <code>lower-alpha</code>, <code>upper-alpha</code>, <code>lower-roman</code>, and <code>upper-roman</code>.';
@@ -1214,6 +1311,7 @@ class crnrstn_communications_css_standard{
                         $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_ALERT_BANG);
 
 
+
                         break;
 
 
@@ -1223,31 +1321,31 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'transition-timing-function';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition-property';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition-duration';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition-delay';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform-style';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform-origin';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform';
                         $tmp_note = 'Partial support with <code>-webkit</code> prefix.';
@@ -1255,51 +1353,51 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'perspective-origin';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'perspective';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-timing-function';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-name';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-play-state';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-iteration-count';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-fill-mode';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-duration';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-direction';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-delay';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'CSS gradients';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'background';
                         $tmp_note = 'Partial. Slash syntax values are not supported.';
@@ -1307,19 +1405,19 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Partial. Supports <code>none</code> with <code>-webkit</code> prefix.';
@@ -1336,67 +1434,67 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'filter';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform-style';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform-origin';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'perspective-origin';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'perspective';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'backface-visibility';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-timing-function';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-play-state';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-name';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-iteration-count';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-fill-mode';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-duration';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-direction';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-delay';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'resize';
                         $tmp_note = 'Buggy. Drag handles are visible, but not functional.';
@@ -1412,19 +1510,19 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'font-variant';
                         $tmp_note = 'Partial. Supports CSS2 values, but not CSS3.';
@@ -1432,7 +1530,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'font-feature-settings';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_AOL_ALTO_ANDROID_APP':
@@ -1453,19 +1551,19 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Partial. Breaks words, but doesn\'t add hyphens.';
@@ -1478,7 +1576,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backdrop-filter';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform';
                         $tmp_note = 'Buggy.';
@@ -1494,27 +1592,27 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-size-adjust';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_BLACKBERRY':
@@ -1523,87 +1621,87 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'filter';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition-timing-function';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition-property';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition-duration';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition-delay';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transition';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform-style';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform-origin';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'perspective-origin';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'perspective';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'backface-visibility';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-timing-function';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-name';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-iteration-count';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-fill-mode';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-duration';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-direction';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-delay';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation-play-state';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'animation';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'list-style-type';
                         $tmp_note = 'Partial. Doesn\'t support <code>circle</code>.';
@@ -1627,7 +1725,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'CSS gradients';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'background';
                         $tmp_note = 'Partial. Fixed attachment is not supported.';
@@ -1639,19 +1737,19 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Partial support with <code>-webkit</code> prefix. Breaks words, but doesn\'t add hyphens.';
@@ -1663,7 +1761,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'font-kerning';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_GMAIL_ANDROID_APP':
@@ -1676,7 +1774,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-overflow';
                         $tmp_note = 'Property is supported, but the client breaks long words with <code><wbr></code> elements. And the <code>word-wrap</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'font-size';
                         $tmp_note = 'Partial. Doesn\'t support all keywords.';
@@ -1710,7 +1808,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-overflow';
                         $tmp_note = 'Property is supported, but the client breaks long words with <code><wbr></code> elements. And the <code>word-wrap</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_GMAIL_MOBILE_WEBMAIL':
@@ -1727,7 +1825,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-overflow';
                         $tmp_note = 'Property is supported, but the client breaks long words with <code><wbr></code> elements. And the <code>word-wrap</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_GOOGLE_INBOX_ANDROID_APP':
@@ -1740,7 +1838,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-overflow';
                         $tmp_note = 'Property is supported, but the client breaks long words with <code><wbr></code> elements. And the <code>word-wrap</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_GOOGLE_INBOX_IOS_APP':
@@ -1753,7 +1851,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-overflow';
                         $tmp_note = 'Property is supported, but the client breaks long words with <code><wbr></code> elements. And the <code>word-wrap</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_IOS_10_MAIL':
@@ -1762,7 +1860,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backdrop-filter';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform';
                         $tmp_note = 'Buggy.';
@@ -1770,7 +1868,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backface-visibility';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'position';
                         $tmp_note = 'Partial. Elements with <code>fixed</code> scroll with the page instead of remaining fixed.';
@@ -1778,27 +1876,27 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-size-adjust';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'font-size';
                         $tmp_note = 'By default, minimum font size is 13px. Use <code>-webkit-text-size-adjust: 100%;</code> to override.';
@@ -1811,7 +1909,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backdrop-filter';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'transform';
                         $tmp_note = 'Buggy.';
@@ -1819,7 +1917,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'backface-visibility';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'position';
                         $tmp_note = 'Partial. Elements with <code>fixed</code> scroll with the page instead of remaining fixed.';
@@ -1827,23 +1925,23 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'font-size';
                         $tmp_note = 'By default, minimum font size is 13px. Use <code>-webkit-text-size-adjust: 100%;</code> to override.';
@@ -1868,19 +1966,19 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
 
                         break;
@@ -1899,27 +1997,27 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-stroke-width';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-stroke';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-size-adjust';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-fill-color';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'hyphens';
                         $tmp_note = 'Supported with <code>-webkit</code> prefix.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_WINDOWS_PHONE_8_MAIL':
@@ -1928,7 +2026,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'border-collapse';
                         $tmp_note = 'Supported, but the HTML attribute <code>cellspacing</code> takes precedence over it.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'list-style-type';
                         $tmp_note = 'Partial. Supports <code>none</code>, <code>disc</code>, <code>circle</code>, <code>square</code>, <code>decimal</code>, <code>lower-alpha</code>, <code>upper-alpha</code>, <code>lower-roman</code>, and <code>upper-roman</code>.';
@@ -2013,7 +2111,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = '@font-face';
                         $tmp_note = 'When images are downloaded.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         break;
                     case 'CRNRSTN_G_SUITE':
@@ -2022,7 +2120,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-overflow';
                         $tmp_note = 'Property is supported, but the client breaks long words with <code><wbr></code> elements. And the <code>word-wrap</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'font-stretch';
                         $tmp_note = 'The property itself is intact, but the necessary media query is removed.';
@@ -2035,7 +2133,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-overflow';
                         $tmp_note = 'Property is supported, but the client breaks long words with <code><wbr></code> elements. And the <code>word-wrap</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'font-stretch';
                         $tmp_note = 'The property itself is intact, but the necessary media query is removed.';
@@ -2048,7 +2146,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'text-overflow';
                         $tmp_note = 'Property is supported, but the client breaks long words with <code><wbr></code> elements. And the <code>word-wrap</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'font-stretch';
                         $tmp_note = 'The property itself is intact, but the necessary media query is removed.';
@@ -2090,7 +2188,7 @@ class crnrstn_communications_css_standard{
 
                         $tmp_css_pattern = 'word-wrap';
                         $tmp_note = 'Property is supported, but the <code>word-break</code> property defaults to <code>break-word</code>.';
-                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHK);
+                        $this->css_meta_load($mail_const_int, $tmp_css_pattern, $tmp_note, CRNRSTN_CSS_ICON_SUCCESS_CHECK);
 
                         $tmp_css_pattern = 'text-shadow';
                         $tmp_note = 'Partial. Supports a single shadow per element, but not multiple.';
@@ -2107,8 +2205,6 @@ class crnrstn_communications_css_standard{
                 //
                 // INITIALIZE PROFILE FOR EACH THROWN CSS PATTERN WITH THIS CLIENT
                 $this->initialize_client_css_profile($tmp_regulated_string_patterns_ARRAY, $mail_const_int);
-
-                //$this->initialize_pattern_regulated_bit($tmp_regulated_string_patterns_ARRAY, $mail_const_int);
 
             }
 
@@ -2194,10 +2290,6 @@ class crnrstn_communications_css_standard{
             //error_log(__LINE__.' '.__METHOD__.' we initialize_serialized_bit() the HAS_META flag for this =>'.$tmp_serialized_meta_index);
             $tmp_val = $this->oCRNRSTN_USR->initialize_serialized_bit($tmp_serialized_meta_index, CRNRSTN_CSS_CLIENT_ASSOC_HAS_META);
 
-            //
-            // DEFINE CONSTANT ONE WITH BIT INTEGER STORAGE
-            //define($tmp_serialized_meta_index, $tmp_val);
-
             $this->css_pattern_meta_note_ARRAY[$tmp_serialized_meta_index] = $string_comment;
 
         }
@@ -2240,7 +2332,7 @@ class crnrstn_communications_css_standard{
 
         //  * NEW META CONSTANTS
                 ~ CRNRSTN_CSS_ICON_ALERT_BANG                   // INDICATION OF ICON TYPE TO BIND
-                ~ CRNRSTN_CSS_ICON_SUCCESS_CHK
+                ~ CRNRSTN_CSS_ICON_SUCCESS_CHECK
                 ~ CRNRSTN_CSS_ICON_ERR_X
 
                 ~ CRNRSTN_CSS_CLIENT_ASSOC_HAS_META             // INDICATION OF NEED TO SHOW A NOTE
@@ -5152,7 +5244,7 @@ Formally, the display property sets an element\'s inner and outer display types.
                     $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_VALIDATE_LINK_IN_BODY');
 
                     $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_ALERT_BANG');            // INDICATION OF ICON TYPE TO BIND
-                    $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_SUCCESS_CHK');           // INDICATION OF ICON TYPE TO BIND
+                    $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_SUCCESS_CHECK');           // INDICATION OF ICON TYPE TO BIND
                     $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_ICON_ERR_X');                 // INDICATION OF ICON TYPE TO BIND
 
                     $this->oCRNRSTN_USR->initialize_bit('CRNRSTN_CSS_CLIENT_ASSOC_HAS_META');      // INDICATION OF NEED TO SHOW A NOTE
@@ -5294,7 +5386,7 @@ Formally, the display property sets an element\'s inner and outer display types.
                                     </tr>
                                     <tr>
                                         <td style="text-align: right;">
-                                            <div style="border-right:20px solid #FFF; border-top:20px solid #FFF;">'.$this->oCRNRSTN_USR->return_email_creative('ICON_EMAIL_INBOX_REFLECT', 'HTML_DOM_WRAPPED_BASE64').'</div>
+                                            <div style="border-right:20px solid #FFF; border-top:20px solid #FFF;">'.$this->oCRNRSTN_USR->return_email_creative('ICON_EMAIL_INBOX_REFLECT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div>
                                         </td>
                                     </tr>
                                     </table>
@@ -5313,7 +5405,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
         <div style="float:right; padding:420px 0 0 0; margin:0; width:100%;">
             <div style="position: absolute; width:100%; text-align: right; background-color: #FFF; padding-top: 20px;">
-                '.$this->oCRNRSTN_USR->return_email_creative('J5_WOLF_PUP', 'HTML_DOM_WRAPPED_BASE64').'
+                '.$this->oCRNRSTN_USR->return_email_creative('J5_WOLF_PUP', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'
             </div>
         </div>
 
@@ -5327,6 +5419,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
         return $tmp_str;
 
+
     }
 
     private function return_css_validator_content_HTML($html_content_injection, $r_tblcol_top_padding = 117){
@@ -5337,7 +5430,7 @@ Formally, the display property sets an element\'s inner and outer display types.
     <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        '.$this->oCRNRSTN_USR->return_email_creative('CRNRSTN_FAVICON', 'HTML_DOM_WRAPPED_BASE64').'
+        '.$this->oCRNRSTN_USR->return_email_creative('CRNRSTN_FAVICON', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'
         <title>Email Client CSS Validator</title>
     </head>
     <body>
@@ -5438,7 +5531,7 @@ Formally, the display property sets an element\'s inner and outer display types.
                                     </tr>
                                     <tr>
                                         <td style="text-align: right;">
-                                            <div style="border-right:20px solid #FFF; border-top:20px solid #FFF;">'.$this->oCRNRSTN_USR->return_email_creative('ICON_EMAIL_INBOX_REFLECT', 'HTML_DOM_WRAPPED_BASE64').'</div>
+                                            <div style="border-right:20px solid #FFF; border-top:20px solid #FFF;">'.$this->oCRNRSTN_USR->return_email_creative('ICON_EMAIL_INBOX_REFLECT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div>
                                         </td>
                                     </tr>
                                     </table>
@@ -5457,7 +5550,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
         <div style="float:right; padding:420px 0 0 0; margin:0; width:100%;">
             <div style="position: absolute; width:100%; text-align: right; background-color: #FFF; padding-top: 20px;">
-                '.$this->oCRNRSTN_USR->return_email_creative('J5_WOLF_PUP', 'HTML_DOM_WRAPPED_BASE64').'
+                '.$this->oCRNRSTN_USR->return_email_creative('J5_WOLF_PUP', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'
             </div>
         </div>
 
@@ -5507,7 +5600,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                         //
                         // INFORMATION BANG ICONOGRAPHY
-                        $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', 'HTML_DOM_WRAPPED_BASE64');
+                        $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                         $this->results_count_aggregation_ARRAY[$mail_client_constant]['BANG'][] = 1;
                         //error_log(__LINE__.' '.$mail_client_constant.' BANG cnt = '.count($this->results_count_aggregation_ARRAY[$mail_client_constant]['BANG']));
@@ -5520,7 +5613,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                             //
                             // ERROR X ICONOGRAPHY
-                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('ERR_X', 'HTML_DOM_WRAPPED_BASE64');
+                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('ERR_X', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                             $this->results_count_aggregation_ARRAY[$mail_client_constant]['X'][] = 1;
                             //error_log(__LINE__.' '.$mail_client_constant.' X cnt = '.count($this->results_count_aggregation_ARRAY[$mail_client_constant]['BANG']));
@@ -5530,7 +5623,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                             //
                             // SUCCESS CHECK ICONOGRAPHY
-                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'HTML_DOM_WRAPPED_BASE64');
+                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                             $this->results_count_aggregation_ARRAY[$mail_client_constant]['SUCCESS'][] = 1;
                             //error_log(__LINE__.' '.$mail_client_constant.' SUCCESS cnt = '.count($this->results_count_aggregation_ARRAY[$mail_client_constant]['BANG']));
@@ -5560,7 +5653,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                         //
                         // INFORMATION BANG ICONOGRAPHY
-                        $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', 'HTML_DOM_WRAPPED_BASE64');
+                        $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
                         $this->results_count_aggregation_ARRAY[$mail_client_constant]['BANG'][] = 1;
 
                     }else{
@@ -5571,14 +5664,14 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                             //
                             // ERROR X ICONOGRAPHY
-                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('ERR_X', 'HTML_DOM_WRAPPED_BASE64');
+                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('ERR_X', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
                             $this->results_count_aggregation_ARRAY[$mail_client_constant]['X'][] = 1;
 
                         }else{
 
                             //
                             // SUCCESS CHECK ICONOGRAPHY
-                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'HTML_DOM_WRAPPED_BASE64');
+                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
                             $this->results_count_aggregation_ARRAY[$mail_client_constant]['SUCCESS'][] = 1;
 
                         }
@@ -5618,7 +5711,7 @@ Formally, the display property sets an element\'s inner and outer display types.
                                     <td style="width:19px; height:19px;"><div style="width:19px; height:19px; overflow:hidden; border-left: 24px solid #FFF; border-right: 15px solid #FFF; line-height:10px;">'.$tmp_icon_img.'</div></td>
 
                                     <td style="width:320px;" >
-                                        <div style=\'color: #6885C3;font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; border-top: 1px solid #FFF;  \'><a href="'.$tmp_array[0].'" style=\'font-family:"Courier New", Courier, monospace; font-size: 17px; text-decoration:none; font-weight: normal; color: #6885C3; text-decoration:underline; \'>'.$css_str_pattern.'</a></div>
+                                        <div style=\'color: #6885C3;font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; border-top: 1px solid #FFF;  \'><a href="'.$tmp_array[0].'" target="_blank" style=\'font-family:"Courier New", Courier, monospace; font-size: 17px; text-decoration:none; font-weight: normal; color: #6885C3; text-decoration:underline; \'>'.htmlentities($css_str_pattern).'</a></div>
                                     </td>
                                     </tr>
                                     <tr>
@@ -5773,7 +5866,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                             //
                             // INFORMATION BANG ICONOGRAPHY
-                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', 'HTML_DOM_WRAPPED_BASE64');
+                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                         }else{
 
@@ -5783,13 +5876,13 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                                 //
                                 // ERROR X ICONOGRAPHY
-                                $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('ERR_X', 'HTML_DOM_WRAPPED_BASE64');
+                                $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('ERR_X', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                             }else{
 
                                 //
                                 // SUCCESS CHECK ICONOGRAPHY
-                                $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'HTML_DOM_WRAPPED_BASE64');
+                                $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                             }
 
@@ -5815,7 +5908,7 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                             //
                             // INFORMATION BANG ICONOGRAPHY
-                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', 'HTML_DOM_WRAPPED_BASE64');
+                            $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                         }else{
 
@@ -5825,13 +5918,13 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                                 //
                                 // ERROR X ICONOGRAPHY
-                                $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('ERR_X', 'HTML_DOM_WRAPPED_BASE64');
+                                $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('ERR_X', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                             }else{
 
                                 //
                                 // SUCCESS CHECK ICONOGRAPHY
-                                $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'HTML_DOM_WRAPPED_BASE64');
+                                $tmp_icon_img = $this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                             }
 
@@ -5923,6 +6016,10 @@ Formally, the display property sets an element\'s inner and outer display types.
 
                 $tmp_output_ARRAY['HTML'] = $tmp_str_A.$tmp_str_B.$tmp_str_C;
 
+                unset($tmp_str_A);
+                unset($tmp_str_B);
+                unset($tmp_str_C);
+
                 $tmp_output_ARRAY['HTML'] = $tmp_output_ARRAY['HTML'] . '<div style=\'font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: bold;  border-bottom: 0px solid #FFF; \'>
                                                 <table cellpadding="0" cellspacing="0" border="0" style="width:365px;">
                                                 <tr>
@@ -5932,9 +6029,12 @@ Formally, the display property sets an element\'s inner and outer display types.
                                                 </table>
                                             </div>';
 
+
                 //
                 // HTML_PAGE
                 $tmp_html_out = $this->return_validation_results_HTML($tmp_output_ARRAY['HTML'], 50);
+
+                array_splice($tmp_output_ARRAY, 0);
 
                 return $tmp_html_out;
 
@@ -6023,7 +6123,7 @@ Formally, the display property sets an element\'s inner and outer display types.
                                                                                                                                     
                                                                                 </table>
                                                                             </td>
-                                                                            <td style="width:50px; text-align:right;"><div style="border-top: 4px solid #FFF;"><a href="#desktop_channel_details" target="_self">'.$this->oCRNRSTN_USR->return_email_creative('SEARCH_MAGNIFY_GLASS', 'HTML_DOM_WRAPPED_BASE64').'</a></div></td>
+                                                                            <td style="width:50px; text-align:right;"><div style="border-top: 4px solid #FFF;"><a href="#desktop_channel_details" target="_self">'.$this->oCRNRSTN_USR->return_email_creative('SEARCH_MAGNIFY_GLASS', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</a></div></td>
                                                                         </tr>
                                                                                                                         
                                                                         </table>
@@ -6053,7 +6153,7 @@ Formally, the display property sets an element\'s inner and outer display types.
                                                                                                                                     
                                                                                 </table>
                                                                             </td>
-                                                                            <td style="width:50px; text-align:right;"><div style="border-top: 4px solid #FFF;"><a href="#mobile_channel_details" target="_self">'.$this->oCRNRSTN_USR->return_email_creative('SEARCH_MAGNIFY_GLASS', 'HTML_DOM_WRAPPED_BASE64').'</a></div></td>
+                                                                            <td style="width:50px; text-align:right;"><div style="border-top: 4px solid #FFF;"><a href="#mobile_channel_details" target="_self">'.$this->oCRNRSTN_USR->return_email_creative('SEARCH_MAGNIFY_GLASS', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</a></div></td>
                             
                                                                         </tr>
                                                                                                                         
@@ -6083,7 +6183,7 @@ Formally, the display property sets an element\'s inner and outer display types.
                                                                                                                                     
                                                                                 </table>
                                                                             </td>
-                                                                            <td style="width:50px; text-align:right;"><div style="border-top: 4px solid #FFF;"><a href="#web_channel_details" target="_self">'.$this->oCRNRSTN_USR->return_email_creative('SEARCH_MAGNIFY_GLASS', 'HTML_DOM_WRAPPED_BASE64').'</a></div></td>
+                                                                            <td style="width:50px; text-align:right;"><div style="border-top: 4px solid #FFF;"><a href="#web_channel_details" target="_self">'.$this->oCRNRSTN_USR->return_email_creative('SEARCH_MAGNIFY_GLASS', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</a></div></td>
                                                                             
                                                                         </tr>
                                                                                                                         
@@ -6099,8 +6199,12 @@ Formally, the display property sets an element\'s inner and outer display types.
                                                         </tr>
                                                         <tr>
                                                             <td colspan="2">
-                                                                <div style=\'font-family:"Courier New", Courier, monospace; font-size: 17px; font-weight: bold; border-left: 10px solid #FFF;  border-top: 10px solid #FFF; border-bottom: 6px solid #FFF; color: #6885C3;\'>Overview ::</div>
-                                                                <div style=\'font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; border-left: 10px solid #FFF; border-right: 10px solid #FFF; border-right: 10px solid #FFF; border-bottom: 10px solid #FFF; color: #6885C3; \'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam quis odio risus. Nam bibendum augue risus, bibendum semper tellus tincidunt ut. Ut facilisis dapibus ipsum, vitae laoreet sapien sodales venenatis. Nullam elementum, orci ac sagittis scelerisque, elit odio pretium augue, eu elementum turpis ex sed nisi. Suspendisse potenti. Pellentesque ut tellus eu lorem venenatis tristique. Suspendisse malesuada eu nulla eu feugiat.</div>
+                                                                <div style=\'font-family:"Courier New", Courier, monospace; font-size: 17px; font-weight: bold; border-left: 10px solid #FFF;  border-top: 10px solid #FFF; border-bottom: 6px solid #FFF; color: #6885C3;\'>Validator Status ::</div>
+                                                                <div style=\'font-family:"Courier New", Courier, monospace; font-size: 13px; font-weight: normal; border-left: 10px solid #FFF; border-right: 10px solid #FFF; border-right: 10px solid #FFF; border-bottom: 10px solid #FFF; color: #6885C3; \'><span style=\'font-family:"Courier New", Courier, monospace; font-size: 14px; font-weight: bold;\'>April 10, 2021 0232hrs.</span> Please scroll down for the CSS validation report. This tool is currently under active development</strong>. Close enough to 
+                                                                a working prototype,...here we are in production. There are some bugs here and there, but
+                                                                once testing is complete, this brief status report will be updated to an 
+                                                                overview of the tool. <br><br>At some point, I would also like to implement share via 
+                                                                email/FTAF for this report. This project is <a href="http://crnrstn.evifweb.com/licensing/" target="_blank">MIT Licensed</a>, and it will be pushed to <a href="https://github.com/jony5" target="_blank">gitHub</a> soon.</div>
                                                                 
                                                             </td>
                                                         </tr>
@@ -6133,6 +6237,8 @@ Formally, the display property sets an element\'s inner and outer display types.
     private function return_validation_results_client_performance($output_format = 'HTML'){
 
         $tmp_str = '';
+
+        $this->total_css_performance_summaries();
 
         switch($output_format){
             case 'HTML':
@@ -6175,28 +6281,28 @@ Formally, the display property sets an element\'s inner and outer display types.
                                             <div>
                                             <table cellspacing="0" cellpadding="0" border="0" style="width:239px; height:20px; overflow:hidden; padding:0; margin:0;">
                                             <tr style="padding:0; margin:0; height: 20px;">
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-left: 9px solid #FFF; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 1).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 2).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 3).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 4).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 5).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 6).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 7).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 8).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 9).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 10).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-left: 9px solid #FFF; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 1, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 2, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 3, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 4, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 5, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 6, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 7, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 8, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 9, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 10, $this->desktop_mail_CONST_ARRAY[$key]).'</div></td>
                                             </tr>               
                                             <tr style="padding:0; margin:0; height: 23px;">
                                                 <td colspan="10">
                                                     <table cellpadding="0" cellspacing="0" border="0" style="padding:0; margin:0;">
                                                     <tr>
-                                                        <td><div style="width: 19px; height:19px; overflow:hidden; border-left: 14px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height:19px; overflow:hidden; border-left: 14px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="width:35px; height: 19px;"><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_bang_cnt.'</a></td>
                                                     
-                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left:8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('ERR_X', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left:8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('ERR_X', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="width:35px;height: 19px; "><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_x_cnt.'</a></td>
                                                     
-                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left: 8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left: 8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="height: 19px;"><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_success_cnt.'</a></td>
                                                    
                                                     </tr>                       
@@ -6232,28 +6338,28 @@ Formally, the display property sets an element\'s inner and outer display types.
                                             <div>
                                             <table cellspacing="0" cellpadding="0" border="0" style="width:239px; height:20px; overflow:hidden; padding:0; margin:0;">
                                             <tr style="padding:0; margin:0; height: 20px;">
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-left: 9px solid #FFF; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 1).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 2).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 3).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 4).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 5).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 6).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 7).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 8).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 9).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 10).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-left: 9px solid #FFF; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 1, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 2, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 3, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 4, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 5, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 6, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 7, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 8, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 9, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 10, $this->mobile_mail_CONST_ARRAY[$key]).'</div></td>
                                             </tr>               
                                             <tr style="padding:0; margin:0; height: 23px;">
                                                 <td colspan="10">
                                                     <table cellpadding="0" cellspacing="0" border="0" style="padding:0; margin:0;">
                                                     <tr>
-                                                        <td><div style="width: 19px; height:19px; overflow:hidden; border-left: 14px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height:19px; overflow:hidden; border-left: 14px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="width:35px; height: 19px;"><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_bang_cnt.'</a></td>
                                                     
-                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left:8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('ERR_X', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left:8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('ERR_X', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="width:35px;height: 19px; "><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_x_cnt.'</a></td>
                                                     
-                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left: 8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left: 8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="height: 19px;"><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_success_cnt.'</a></td>
                                                    
                                                     </tr>                       
@@ -6287,28 +6393,28 @@ Formally, the display property sets an element\'s inner and outer display types.
                                             <div>
                                             <table cellspacing="0" cellpadding="0" border="0" style="width:239px; height:20px; overflow:hidden; padding:0; margin:0;">
                                             <tr style="padding:0; margin:0; height: 20px;">
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-left: 9px solid #FFF; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 1).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 2).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 3).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 4).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 5).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 6).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 7).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 8).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 9).'</div></td>
-                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 10).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-left: 9px solid #FFF; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 1, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 2, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 3, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 4, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 5, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 6, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 7, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 8, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 9, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
+                                                <td><div style="width: 20px; height: 20px; overflow:hidden; border-right: 1px solid #FFF;">'.$this->return_validation_score('GRAPHIC_DOT_CHANNEL_CLIENT', 10, $this->web_mail_CONST_ARRAY[$key]).'</div></td>
                                             </tr>               
                                             <tr style="padding:0; margin:0; height: 23px;">
                                                 <td colspan="10">
                                                     <table cellpadding="0" cellspacing="0" border="0" style="padding:0; margin:0;">
                                                     <tr>
-                                                        <td><div style="width: 19px; height:19px; overflow:hidden; border-left: 14px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height:19px; overflow:hidden; border-left: 14px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('NOTICE_TRI_ALERT', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="width:35px; height: 19px;"><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_bang_cnt.'</a></td>
                                                     
-                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left:8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('ERR_X', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left:8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('ERR_X', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="width:35px;height: 19px; "><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_x_cnt.'</a></td>
                                                     
-                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left: 8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHK', 'HTML_DOM_WRAPPED_BASE64').'</div></td>
+                                                        <td><div style="width: 19px; height: 19px; overflow:hidden; border-left: 8px solid #FFF; border-right: 4px solid #FFF; border-top: 3px solid #FFF; line-height:10px;">'.$this->oCRNRSTN_USR->return_email_creative('SUCCESS_CHECK', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED).'</div></td>
                                                         <td style="height: 19px;"><a href="#'.$this->format_output($client_nom,'CLIENT_NOM').'" style=\'height: 23px; color: #6885C3; font-family:"Courier New", Courier, monospace; font-size: 15px; font-weight: normal; line-height:10px; margin:0; padding:0; \'>'.$tmp_success_cnt.'</a></td>
                                                    
                                                     </tr>                       
@@ -6511,7 +6617,118 @@ CSS Support Within Message';
         $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = substr_count($this->raw_data_LOWER, $tmp_css_string);
 
     }
-    
+
+    private function css_validate_STYLE_IN_HEAD($css_string_nomination, $key_css_species){
+
+        $tmp_ARRAY = explode('<head', $this->raw_data_PACKED);
+
+        if(isset($tmp_ARRAY[1])){
+
+            $tmp_ARRAY = explode('</head', $tmp_ARRAY[1]);
+
+            $tmp_cnt = substr_count($tmp_ARRAY[0], '<style');
+
+            if($tmp_cnt > 0){
+
+                $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 1;
+
+            }else{
+
+                $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 0;
+
+            }
+
+        }else{
+
+            $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 0;
+
+        }
+
+    }
+
+    private function css_validate_STYLE_IN_BODY($css_string_nomination, $key_css_species){
+
+        $tmp_ARRAY = explode('<body', $this->raw_data_PACKED);
+
+        if(isset($tmp_ARRAY[1])){
+
+            $tmp_ARRAY = explode('</body', $tmp_ARRAY[1]);
+
+            $tmp_cnt = substr_count($tmp_ARRAY[0], '<style');
+
+            if($tmp_cnt > 0){
+
+                $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 1;
+
+            }else{
+
+                $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 0;
+
+            }
+
+        }else{
+
+            $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 0;
+
+        }
+
+    }
+
+    private function css_validate_LINK_IN_HEAD($css_string_nomination, $key_css_species){
+
+        $tmp_ARRAY = explode('<head', $this->raw_data_PACKED);
+
+        if(isset($tmp_ARRAY[1])){
+
+            $tmp_ARRAY = explode('</head', $tmp_ARRAY[1]);
+
+            $tmp_cnt = substr_count($tmp_ARRAY[0], '<link');
+
+            if($tmp_cnt > 0){
+
+                $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 1;
+
+            }else{
+
+                $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 0;
+
+            }
+
+        }else{
+
+            $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 0;
+
+        }
+
+    }
+
+    private function css_validate_LINK_IN_BODY($css_string_nomination, $key_css_species){
+
+        $tmp_ARRAY = explode('<body', $this->raw_data_PACKED);
+
+        if(isset($tmp_ARRAY[1])){
+
+            $tmp_ARRAY = explode('</body', $tmp_ARRAY[1]);
+
+            $tmp_cnt = substr_count($tmp_ARRAY[0], '<linkrel');
+
+            if($tmp_cnt > 0){
+
+                $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 1;
+
+            }else{
+
+                $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 0;
+
+            }
+
+        }else{
+
+            $this->validation_results_ARRAY[$key_css_species][$css_string_nomination] = 0;
+
+        }
+    }
+
     private function format_output($str, $format_type = 'NOTE', $output_type = 'HTML'){
 
         $formatted_str = '';
@@ -6719,13 +6936,13 @@ CSS Support Within Message';
 
             //
             // USE GREEN DOTS
-            $tmp_dot_HTML = $this->oCRNRSTN_USR->return_email_creative('CSS_VALIDATE_DOT_GREEN', 'HTML_DOM_WRAPPED_BASE64');
+            $tmp_dot_HTML = $this->oCRNRSTN_USR->return_email_creative('DOT_GREEN', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
         }else{
 
             //
             // USE RED DOTS
-            $tmp_dot_HTML = $this->oCRNRSTN_USR->return_email_creative('CSS_VALIDATE_DOT_RED', 'HTML_DOM_WRAPPED_BASE64');
+            $tmp_dot_HTML = $this->oCRNRSTN_USR->return_email_creative('DOT_RED', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
         }
 
@@ -6739,7 +6956,7 @@ CSS Support Within Message';
 
                 //
                 // USE CLEAR DOTS FOR ANY REMAINING DOTS.
-                $tmp_dot_HTML = $this->oCRNRSTN_USR->return_email_creative('CSS_VALIDATE_DOT_OFF', 'HTML_DOM_WRAPPED_BASE64');
+                $tmp_dot_HTML = $this->oCRNRSTN_USR->return_email_creative('DOT_OFF', CRNRSTN_UI_IMG_BASE64_HTML_WRAPPED);
 
                 return $tmp_dot_HTML;
 
@@ -6753,77 +6970,134 @@ CSS Support Within Message';
 
     }
 
-    public function return_validation_score($output_type, $index = 0){
-
-        $this->total_css_performance_summaries();
+    public function return_validation_score($output_type, $index = 0, $client_const = NULL){
 
         //
         // ADJUST FOR THE SPOT
         $index_z = $index - 1;
 
-        //
-        // TOTAL AGGREGATE FROM CHANNEL - DESKTOP
-        $tmp_bang_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['BANG'];
-        $tmp_x_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['X'];
-        $tmp_success_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['SUCCESS'];
-
-        //$this->oCRNRSTN_USR->error_log('tmp_x_DESKTOP='.$tmp_x_DESKTOP, __LINE__, __METHOD__, __FILE__, CRNRSTN_CSS_EMAIL_CLIENT_VALIDATE);
-
-        //
-        // TOTAL AGGREGATE FROM CHANNEL - MOBILE
-        $tmp_bang_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['BANG'];
-        $tmp_x_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['X'];
-        $tmp_success_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['SUCCESS'];
-
-        //
-        // TOTAL AGGREGATE FROM CHANNEL - WEB
-        $tmp_bang_WEB = $this->results_summary_aggregate_ARRAY['WEB']['BANG'];
-        $tmp_x_WEB = $this->results_summary_aggregate_ARRAY['WEB']['X'];
-        $tmp_success_WEB = $this->results_summary_aggregate_ARRAY['WEB']['SUCCESS'];
-
-        $tmp_agg_bang = $tmp_bang_DESKTOP + $tmp_bang_MOBILE + $tmp_bang_WEB;
-        $tmp_agg_x = $tmp_x_DESKTOP + $tmp_x_MOBILE + $tmp_x_WEB;
-        $tmp_agg_success = $tmp_success_DESKTOP + $tmp_success_MOBILE + $tmp_success_WEB;
-
-        //$this->oCRNRSTN_USR->error_log('err_cnt='.$tmp_agg_x.', success_cnt='.$tmp_agg_success.', bang_cnt='.$tmp_agg_bang, __LINE__, __METHOD__, __FILE__, CRNRSTN_CSS_EMAIL_CLIENT_VALIDATE);
-
-        $tmp_score = $this->calculate_numerical_score($tmp_agg_x, $tmp_agg_success, $tmp_agg_bang);
-
         switch($output_type){
             case 'ALPHA':
 
-                return $this->numeric_to_alpha($tmp_score);
+                if(!isset($this->email_client_score_ARRAY['NUMERIC'])){
+
+                    $tmp_bang_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['BANG'];
+                    $tmp_x_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['X'];
+                    $tmp_success_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['SUCCESS'];
+
+                    $tmp_bang_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['BANG'];
+                    $tmp_x_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['X'];
+                    $tmp_success_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['SUCCESS'];
+
+                    $tmp_bang_WEB = $this->results_summary_aggregate_ARRAY['WEB']['BANG'];
+                    $tmp_x_WEB = $this->results_summary_aggregate_ARRAY['WEB']['X'];
+                    $tmp_success_WEB = $this->results_summary_aggregate_ARRAY['WEB']['SUCCESS'];
+
+                    $tmp_agg_bang = $tmp_bang_DESKTOP + $tmp_bang_MOBILE + $tmp_bang_WEB;
+                    $tmp_agg_x = $tmp_x_DESKTOP + $tmp_x_MOBILE + $tmp_x_WEB;
+                    $tmp_agg_success = $tmp_success_DESKTOP + $tmp_success_MOBILE + $tmp_success_WEB;
+
+                    $tmp_score = $this->calculate_numerical_score($tmp_agg_x, $tmp_agg_success, $tmp_agg_bang);
+
+                    $this->email_client_score_ARRAY['NUMERIC'] = $tmp_score;
+
+                }
+
+                return $this->numeric_to_alpha($this->email_client_score_ARRAY['NUMERIC']);
 
             break;
             case 'NUMERIC':
 
-                return (int) $tmp_score;
+                if(!isset($this->email_client_score_ARRAY['NUMERIC'])){
+
+                    $tmp_bang_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['BANG'];
+                    $tmp_x_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['X'];
+                    $tmp_success_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['SUCCESS'];
+
+                    $tmp_bang_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['BANG'];
+                    $tmp_x_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['X'];
+                    $tmp_success_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['SUCCESS'];
+
+                    $tmp_bang_WEB = $this->results_summary_aggregate_ARRAY['WEB']['BANG'];
+                    $tmp_x_WEB = $this->results_summary_aggregate_ARRAY['WEB']['X'];
+                    $tmp_success_WEB = $this->results_summary_aggregate_ARRAY['WEB']['SUCCESS'];
+
+                    $tmp_agg_bang = $tmp_bang_DESKTOP + $tmp_bang_MOBILE + $tmp_bang_WEB;
+                    $tmp_agg_x = $tmp_x_DESKTOP + $tmp_x_MOBILE + $tmp_x_WEB;
+                    $tmp_agg_success = $tmp_success_DESKTOP + $tmp_success_MOBILE + $tmp_success_WEB;
+
+                    $tmp_score = $this->calculate_numerical_score($tmp_agg_x, $tmp_agg_success, $tmp_agg_bang);
+
+                    $this->email_client_score_ARRAY['NUMERIC'] = $tmp_score;
+
+                }
+
+                return (int) $this->email_client_score_ARRAY['NUMERIC'];
 
             break;
             case 'GRAPHIC_DOT_CHANNEL_CLIENT':
 
-                return $this->numeric_to_dot_graphic($tmp_score, $index_z);
+                return $this->numeric_to_dot_graphic($this->email_client_score_ARRAY[$client_const], $index_z);
 
             break;
             case 'GRAPHIC_DOT_CHANNEL_DESKTOP':
 
-                $tmp_score = $this->calculate_numerical_score($tmp_x_DESKTOP, $tmp_success_DESKTOP, $tmp_bang_DESKTOP);
+                if(!isset($this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_DESKTOP'])){
 
-                return $this->numeric_to_dot_graphic($tmp_score, $index_z);
+                    //
+                    // TOTAL AGGREGATE FROM CHANNEL - DESKTOP
+                    $tmp_bang_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['BANG'];
+                    $tmp_x_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['X'];
+                    $tmp_success_DESKTOP = $this->results_summary_aggregate_ARRAY['DESKTOP']['SUCCESS'];
+
+                    $tmp_score_DESKTOP = $this->calculate_numerical_score($tmp_x_DESKTOP, $tmp_success_DESKTOP, $tmp_bang_DESKTOP);
+                    error_log(__LINE__.' css mobile score='.$tmp_score_DESKTOP.' X['.$tmp_x_DESKTOP.'] S['.$tmp_success_DESKTOP.']');
+
+                    $this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_DESKTOP'] = $tmp_score_DESKTOP;
+
+                }
+
+                return $this->numeric_to_dot_graphic($this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_DESKTOP'], $index_z);
 
             break;
             case 'GRAPHIC_DOT_CHANNEL_MOBILE':
 
-                $tmp_score = $this->calculate_numerical_score($tmp_x_MOBILE, $tmp_success_MOBILE, $tmp_bang_MOBILE);
+                if(!isset($this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_MOBILE'])) {
 
-                return $this->numeric_to_dot_graphic($tmp_score, $index_z);
+                    //
+                    // TOTAL AGGREGATE FROM CHANNEL - MOBILE
+                    $tmp_bang_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['BANG'];
+                    $tmp_x_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['X'];
+                    $tmp_success_MOBILE = $this->results_summary_aggregate_ARRAY['MOBILE']['SUCCESS'];
+
+                    $tmp_score = $this->calculate_numerical_score($tmp_x_MOBILE, $tmp_success_MOBILE, $tmp_bang_MOBILE);
+                    error_log(__LINE__.' css mobile score='.$tmp_score.' X['.$tmp_x_MOBILE.'] S['.$tmp_success_MOBILE.']');
+
+                    $this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_MOBILE'] = $tmp_score;
+
+                }
+
+                return $this->numeric_to_dot_graphic($this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_MOBILE'], $index_z);
 
             break;
             case 'GRAPHIC_DOT_CHANNEL_WEB':
 
-                $tmp_score = $this->calculate_numerical_score($tmp_x_WEB, $tmp_success_WEB, $tmp_bang_WEB);
+                if(!isset($this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_WEB'])) {
 
-                return $this->numeric_to_dot_graphic($tmp_score, $index_z);
+                    //
+                    // TOTAL AGGREGATE FROM CHANNEL - WEB
+                    $tmp_bang_WEB = $this->results_summary_aggregate_ARRAY['WEB']['BANG'];
+                    $tmp_x_WEB = $this->results_summary_aggregate_ARRAY['WEB']['X'];
+                    $tmp_success_WEB = $this->results_summary_aggregate_ARRAY['WEB']['SUCCESS'];
+
+                    $tmp_score = $this->calculate_numerical_score($tmp_x_WEB, $tmp_success_WEB, $tmp_bang_WEB);
+                    error_log(__LINE__.' css web score='.$tmp_score.' X['.$tmp_x_WEB.'] S['.$tmp_success_WEB.']');
+
+                    $this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_WEB'] = $tmp_score;
+
+                }
+
+                return $this->numeric_to_dot_graphic($this->email_client_score_ARRAY['GRAPHIC_DOT_CHANNEL_WEB'], $index_z);
 
             break;
             default:
@@ -6860,22 +7134,45 @@ CSS Support Within Message';
         // ABJECT FAILURE FROM NUMBERS.APP...Monday, 4.5.2021 at 1019hrs
         // BUT THIS LINE RIGHT HERE WAS 'GOOD LOOKING OUT' FROM THE ERROR_LOG OUTPUT.
         //$score = (double) (((1 - ($err_cnt/242)) * 100)) + $success_cnt;
-        $score = ((1.00000 - ((1.400000 * $err_cnt) / 241.00000)) * 100.00000) * -1;
-        $score = $score + (double) $this->grading_curve;
-        $score = 100;
-        //error_log(__LINE__.' $bang = '.$bang);
 
-        //$bang_weight = (double) ($tmp_val / $bang) * 100.00;
-        //error_log(__LINE__.' $bang_weight = '.$bang_weight);
+        /*
+        4.9.2021 at 2253hrs
 
-        //$delta = (double) $bang - (100.00 * $bang_weight);
-        //error_log(__LINE__.' $delta = '.$delta);
+        50				total possible (total number of hits/css pattern matches)
+        11				total error
 
-        //$score =  (double) $delta + $tmp_val;
-        //error_log(__LINE__.' $score = '.$score);
-        //error_log(__LINE__.' int score = '.(int) $score);
+        11/50 = A
+        A * 100 = B
+        100 - B
 
-        return $score;
+         * */
+
+
+        $tmp = $err_cnt + $success_cnt;
+
+        if($tmp > 0){
+
+            $tmp = (double) ($err_cnt / $tmp);
+
+            $tmp = (double) 100 * $tmp;
+
+            $score = (double) 100 - $tmp;
+
+            $score = (double) $this->grading_curve + (double) $score;
+
+            if($score > 100){
+
+                $score = 100;
+
+            }
+
+            return $score;
+
+        }else{
+
+            return 97;
+
+        }
 
     }
 
@@ -6894,9 +7191,9 @@ CSS Support Within Message';
         // DESKTOP
         foreach($this->desktop_mail_CONST_ARRAY as $key => $client_const){
 
-            $tmp_bang_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['BANG']);
-            $tmp_x_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['X']);
-            $tmp_success_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['SUCCESS']);
+            $tmp_bang_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['BANG']) - 1;
+            $tmp_x_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['X']) - 1;
+            $tmp_success_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['SUCCESS']) - 1;
 
             //
             // STORE CLIENT AGGREGATE
@@ -6904,11 +7201,35 @@ CSS Support Within Message';
             $this->results_summary_aggregate_ARRAY[$client_const]['X'] += $tmp_x_cnt;
             $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'] += $tmp_success_cnt;
 
+            $tmp = $this->results_summary_aggregate_ARRAY[$client_const]['X'] + $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'];
+
+            if($tmp > 0){
+
+                $tmp = $this->results_summary_aggregate_ARRAY[$client_const]['X'] / $tmp;
+
+                $tmp = 100 * $tmp;
+
+                $tmp_score = 100 - $tmp;
+
+            }else{
+
+                $this->results_summary_aggregate_ARRAY[$client_const]['X'] = 0;
+                $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'] = 0;
+
+                $tmp_score = 95;
+
+            }
+
+            //$tmp_score = 100.00000 - (100.00000 * ($this->results_summary_aggregate_ARRAY[$client_const]['X'] / ($this->results_summary_aggregate_ARRAY[$client_const]['X'] + $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'])));
+
+            $this->email_client_score_ARRAY[$client_const] = (double) $tmp_score;
+
+
             //
             // CHANNEL AGGREGATE
-            $tmp_bang_AGG_cnt += $tmp_bang_cnt;
-            $tmp_x_AGG_cnt += $tmp_x_cnt;
-            $tmp_success_AGG_cnt += $tmp_success_cnt;
+            $tmp_bang_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['BANG'];
+            $tmp_x_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['X'];
+            $tmp_success_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'];
 
         }
 
@@ -6926,21 +7247,42 @@ CSS Support Within Message';
         // MOBILE
         foreach($this->mobile_mail_CONST_ARRAY as $key => $client_const){
 
-            $tmp_bang_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['BANG']);
-            $tmp_x_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['X']);
-            $tmp_success_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['SUCCESS']);
+            $tmp_bang_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['BANG']) - 1;
+            $tmp_x_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['X']) - 1;
+            $tmp_success_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['SUCCESS']) -1;
 
             //
             // STORE CLIENT AGGREGATE
             $this->results_summary_aggregate_ARRAY[$client_const]['BANG'] += $tmp_bang_cnt;
-            $this->results_summary_aggregate_ARRAY[$client_const]['BANG'] += $tmp_x_cnt;
-            $this->results_summary_aggregate_ARRAY[$client_const]['BANG'] += $tmp_success_cnt;
+            $this->results_summary_aggregate_ARRAY[$client_const]['X'] += $tmp_x_cnt;
+            $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'] += $tmp_success_cnt;
+
+            $tmp = $this->results_summary_aggregate_ARRAY[$client_const]['X'] + $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'];
+
+            if($tmp > 0){
+
+                $tmp = $this->results_summary_aggregate_ARRAY[$client_const]['X'] / $tmp;
+
+                $tmp = 100 * $tmp;
+
+                $tmp_score = 100 - $tmp;
+
+            }else{
+
+                $this->results_summary_aggregate_ARRAY[$client_const]['X'] = 0;
+                $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'] = 0;
+
+                $tmp_score = 95;
+
+            }
+
+            $this->email_client_score_ARRAY[$client_const] = (double) $tmp_score;
 
             //
             // CHANNEL AGGREGATE
-            $tmp_bang_AGG_cnt += $tmp_bang_cnt;
-            $tmp_x_AGG_cnt += $tmp_x_cnt;
-            $tmp_success_AGG_cnt += $tmp_success_cnt;
+            $tmp_bang_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['BANG'];
+            $tmp_x_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['X'];
+            $tmp_success_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'];
 
         }
 
@@ -6958,19 +7300,41 @@ CSS Support Within Message';
         // WEB
         foreach($this->web_mail_CONST_ARRAY as $key => $client_const){
 
-            $tmp_bang_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['BANG']);
-            $tmp_x_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['X']);
-            $tmp_success_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['SUCCESS']);
+            $tmp_bang_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['BANG']) - 1;
+            $tmp_x_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['X']) - 1;
+            $tmp_success_cnt = (int) count($this->results_count_aggregation_ARRAY[$client_const]['SUCCESS']) - 1;
 
             $this->results_summary_aggregate_ARRAY[$client_const]['BANG'] += $tmp_bang_cnt;
             $this->results_summary_aggregate_ARRAY[$client_const]['X'] += $tmp_x_cnt;
             $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'] += $tmp_success_cnt;
 
+            $tmp = $this->results_summary_aggregate_ARRAY[$client_const]['X'] + $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'];
+
+            if($tmp > 0){
+
+                $tmp = $this->results_summary_aggregate_ARRAY[$client_const]['X'] / $tmp;
+
+                $tmp = 100 * $tmp;
+
+                $tmp_score = 100 - $tmp;
+
+            }else{
+
+                $this->results_summary_aggregate_ARRAY[$client_const]['X'] = 0;
+                $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'] = 0;
+
+                $tmp_score = 95;
+
+            }
+
+            //$tmp_score = 100.00000 - (100.00000 * ($this->results_summary_aggregate_ARRAY[$client_const]['X'] / ($this->results_summary_aggregate_ARRAY[$client_const]['X'] + $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'])));
+            $this->email_client_score_ARRAY[$client_const] = (double) $tmp_score;
+
             //
             // CHANNEL AGGREGATE
-            $tmp_bang_AGG_cnt += $tmp_bang_cnt;
-            $tmp_x_AGG_cnt += $tmp_x_cnt;
-            $tmp_success_AGG_cnt += $tmp_success_cnt;
+            $tmp_bang_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['BANG'];
+            $tmp_x_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['X'];
+            $tmp_success_AGG_cnt += $this->results_summary_aggregate_ARRAY[$client_const]['SUCCESS'];
 
         }
 
